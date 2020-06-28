@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Police Brutality Dashboard</title>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+        }
+        
+        .bar {
+            fill: #5f89ad;
+        }
+        
+        .axis {
+            font-size: 10px;
+            font-weight:bold;
+        }
+        
+        .axis path,
+        .axis line {
+            fill: none;
+            display: none;
+        }
+        
+        .label {
+            font-size: 10px;
+        }
+    </style>
+
+</head>
+<body>
+    <h4>Police Brutality (by State)</h4>
+
+    <div id="graphic"></div>
+    <script>
+        var data = 
+        [{"name":"CA","value":1186},{"name":"TX","value":719},{"name":"FL","value":540},{"name":"AZ","value":343},{"name":"GA","value":265},{"name":"CO","value":227},{"name":"WA","value":218},{"name":"OH","value":215},{"name":"OK","value":214},{"name":"NC","value":204},{"name":"MO","value":197},{"name":"IL","value":181},{"name":"TN","value":179},{"name":"PA","value":171},{"name":"NY","value":155},{"name":"LA","value":148},{"name":"NM","value":142},{"name":"AL","value":138},{"name":"MD","value":128},{"name":"VA","value":124},{"name":"IN","value":124},{"name":"MI","value":123},{"name":"KY","value":122},{"name":"NV","value":121},{"name":"SC","value":120},{"name":"OR","value":113},{"name":"WI","value":111},{"name":"MS","value":108},{"name":"AR","value":103},{"name":"NJ","value":103},{"name":"MN","value":84},{"name":"UT","value":82},{"name":"KS","value":75},{"name":"WV","value":74},{"name":"MA","value":56},{"name":"ID","value":48},{"name":"IA","value":45},{"name":"AK","value":41},{"name":"MT","value":40},{"name":"HI","value":37},{"name":"NE","value":36},{"name":"CT","value":36},{"name":"ME","value":31},{"name":"DC","value":26},{"name":"SD","value":25},{"name":"DE","value":20},{"name":"WY","value":19},{"name":"NH","value":17},{"name":"VT","value":12},{"name":"ND","value":11},{"name":"RI","value":6}]
+        ;
+
+        //sort bars based on value
+        data = data.sort(function (a, b) {
+            return d3.ascending(a.value, b.value);
+        })
+
+        //set up svg using margin conventions - we'll need plenty of room on the left for labels
+        var margin = {
+            top: 15,
+            right: 100,
+            bottom: 15,
+            left: 60
+        };
+
+        var width = 495 - margin.left - margin.right,
+            height = 250 - margin.top - margin.bottom;
+
+        var svg = d3.select("#graphic").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var x = d3.scale.linear()
+            .range([0, width])
+            .domain([0, d3.max(data, function (d) {
+                return d.value;
+            })]);
+
+        var y = d3.scale.ordinal()
+            .rangeRoundBands([height, 0], .2)
+            .domain(data.map(function (d) {
+                return d.name;
+            }));
+
+        //make y axis to show bar names
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            //no tick marks
+            .tickSize(0)
+            .orient("left");
+
+        var gy = svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+
+        var bars = svg.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("g")
+
+        //append rects
+        bars.append("rect")
+            .attr("class", "bar")
+            .attr("y", function (d) {
+                return y(d.name);
+            })
+            .attr("height", y.rangeBand())
+            .attr("x", 0)
+            .attr("width", function (d) {
+                return x(d.value);
+            });
+
+        //add a value label to the right of each bar
+        bars.append("text")
+            .attr("class", "label")
+            //y position of the label is halfway down the bar
+            .attr("y", function (d) {
+                return y(d.name) + y.rangeBand() / 2 + 4;
+            })
+            //x position is 3 pixels to the right of the bar
+            .attr("x", function (d) {
+                return x(d.value) + 3;
+            })
+            .text(function (d) {
+                return d.value;
+            });
+        
+    </script>
+
+
+
+</body>
+
+</html>
