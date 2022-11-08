@@ -19,7 +19,7 @@
 		"d3-fetch": "^1.2.0",
 		"google-charts": "^2.0.0",
 		"mysql": "^2.18.1",
-		"next": "^9.4.4",
+		"next": "^13.0.2",
 		"path-to-regexp": "^6.1.0",
 		"react": "^16.13.1",
 		"react-bootstrap": "^1.0.1",
